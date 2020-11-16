@@ -17,9 +17,9 @@ namespace CodingEvents.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.events = EventData.GetAll();
+            List<Event> events = new List<Event>(EventData.GetAll());
 
-            return View();
+            return View(events);
         }
 
         [HttpGet]
@@ -30,11 +30,43 @@ namespace CodingEvents.Controllers
 
         [HttpPost]
         [Route("/Events/Add")]
-        public IActionResult NewEvent(string name, string desc)
+        public IActionResult NewEvent(Event newEvent)
         {
-            EventData.Add(new Event(name, desc));
+            EventData.Add(newEvent);
 
             return Redirect("/Events");
         }
+
+        public IActionResult Delete()
+        {
+            ViewBag.events = EventData.GetAll();
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int[] eventIds)
+        {
+            foreach(int eventId in eventIds)
+            {
+                EventData.Remove(eventId);
+            }
+
+            return Redirect("/Events");
+        }
+
+        //[HttpGet]
+        //[Route("/Events/Edit/{eventID?}")]
+        //public IActionResult Edit(int eventID)
+        //{
+        //    ViewBag.events = EventData.GetById(eventID);
+        //    return View();
+        //}
+
+        //[HttpPost]
+        //[Route("/Events/Edit")]
+        //public IActionResult SubmitEditEventForm(int eventId, string name, string description)
+        //{
+
+        //}
     }
 }
